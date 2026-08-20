@@ -19,7 +19,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json && mkdir -p dist/vulndb && cp src/vulndb/vulnerable-functions.json dist/vulndb/vulnerable-functions.json && mkdir -p dist/incident && cp src/incident/event-stream-2018.json dist/incident/event-stream-2018.json",
+    "build": "node init && tsc -p tsconfig.json && mkdir -p dist/vulndb && cp src/vulndb/vulnerable-functions.json dist/vulndb/vulnerable-functions.json && mkdir -p dist/incident && cp src/incident/event-stream-2018.json dist/incident/event-stream-2018.json",
     "scan": "tsx src/cli.ts",
     "web": "tsx src/webServer.ts",
     "client:install": "cd client && npm install",
@@ -27,12 +27,14 @@
     "client:dev": "cd client && npm run dev",
     "incident": "tsx src/incidentCli.ts",
     "gate": "tsx src/gateCli.ts",
-    "dev": "tsx watch src/cli.ts",
+    "dev": "node init && tsx watch src/cli.ts",
     "selftest": "node .selftest/build.mjs && node .selftest/run-config.mjs && node .selftest/run-safe-static.mjs && node .selftest/run-scan-input.mjs && node .selftest/run.mjs && node .selftest/run-incident.mjs && node .selftest/run-gate.mjs"
   },
   "dependencies": {
     "cli-table3": "^0.6.5",
     "commander": "^12.1.0",
+    "dotenv": "^8.2.0",
+    "node-fetch": "^3.3.2",
     "picocolors": "^1.1.0",
     "ts-morph": "^23.0.0"
   },

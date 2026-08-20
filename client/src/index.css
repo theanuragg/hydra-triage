@@ -1424,7 +1424,7 @@ footer {
   opacity: 0.7;
 }
 
-/* ---------- graph view ---------- */
+/* ---------- graph view (obsidian-style) ---------- */
 .graph-card {
   position: relative;
   background: var(--panel);
@@ -1436,61 +1436,68 @@ footer {
   display: block;
   width: 100%;
   height: clamp(420px, 60vh, 560px);
-  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 22px 22px;
+  background: var(--void);
   touch-action: none;
   user-select: none;
 }
 .graph-edge {
   stroke: #333333;
-  stroke-width: 1.6;
-  opacity: 0.85;
+  stroke-width: 1;
+  opacity: 0.35;
   fill: none;
 }
-.graph-edge.sink {
-  stroke: rgba(255, 255, 255, 0.4);
-  stroke-dasharray: 5 4;
+.graph-edge.sink-edge {
+  stroke: rgba(255, 255, 255, 0.35);
+  stroke-dasharray: 4 3;
 }
-.graph-edge.sinkedge-reachable {
-  stroke: rgba(255, 255, 255, 0.7);
-  stroke-dasharray: 5 4;
+.graph-edge.sink-edge-reachable {
+  stroke: rgba(255, 255, 255, 0.6);
+  stroke-dasharray: 4 3;
 }
 .graph-edge.unseen {
   stroke: #1a1a1a;
-  stroke-dasharray: 3 4;
+  stroke-dasharray: 2 3;
 }
 .graph-edge.path {
   stroke: var(--ink);
-  stroke-width: 3;
-  stroke-dasharray: 10 6;
+  stroke-width: 2;
+  stroke-dasharray: 8 5;
   animation: dash 1.2s linear infinite;
   opacity: 1;
 }
 @keyframes dash {
-  to { stroke-dashoffset: -32; }
+  to { stroke-dashoffset: -26; }
 }
 .graph-node {
   cursor: grab;
+  transition: opacity 0.2s;
 }
 .graph-node:focus-visible {
   outline: none;
 }
+.graph-node.dimmed {
+  opacity: 0.12;
+}
+.graph-node.dimmed circle,
+.graph-node.dimmed path {
+  stroke-width: 1;
+}
 .graph-node circle,
 .graph-node path {
-  stroke-width: 2;
+  stroke-width: 1.5;
   fill: var(--panel-raised);
 }
 .graph-node.fn circle {
-  stroke: #333333;
-  fill: var(--panel-raised);
+  stroke: #444444;
+  fill: #1a1a1a;
 }
 .graph-node.entry circle {
   stroke: var(--ink);
-  fill: rgba(255, 255, 255, 0.06);
-  stroke-width: 2.5;
+  fill: rgba(255, 255, 255, 0.08);
+  stroke-width: 2;
 }
 .graph-node.sink path {
-  stroke-width: 2;
+  stroke-width: 1.5;
 }
 .graph-node.sink.reachable path {
   stroke: var(--ink);
@@ -1507,12 +1514,12 @@ footer {
 }
 .graph-node.on-path circle,
 .graph-node.on-path path {
-  stroke-width: 3.5;
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.35));
 }
 .node-label {
   fill: var(--ink);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   font-family: "Inter", sans-serif;
   text-anchor: middle;
@@ -1523,7 +1530,7 @@ footer {
 }
 .node-sub {
   fill: var(--ink-faint);
-  font-size: 10px;
+  font-size: 9px;
   font-family: "JetBrains Mono", monospace;
   text-anchor: middle;
   paint-order: stroke;
