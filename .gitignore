@@ -1,0 +1,69 @@
+# Dependencies
+node_modules/
+client/node_modules/
+
+# Build output
+dist/
+client/dist/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# HydraDB data
+.hydradb/
+
+# Selftest builds
+.selftest/build/
+.client/selftest/build/
+client/.selftest/build/
+
+# Reports
+hydra-triage-report.html
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# TypeScript
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Vite
+client/.vite/
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Temp files
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Package managers
+.pnpm-debug.log*
+
+# Optional: deployment configs
+.vercel/
+.netlify/

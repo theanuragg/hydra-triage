@@ -1,0 +1,48 @@
+{
+  "_sources": [
+    "https://blog.npmjs.org/post/180565383195/details-about-the-event-stream-incident",
+    "https://snyk.io/blog/a-post-mortem-of-the-malicious-event-stream-backdoor/",
+    "https://github.com/dominictarr/event-stream/issues/116",
+    "https://github.com/dominictarr/event-stream/issues/115",
+    "https://medium.com/intrinsic-blog/compromised-npm-package-event-stream-d47d08605502",
+    "https://es-incident.github.io/paper.html"
+  ],
+  "_note": "Every fact below is drawn from the sources above, retrieved via live web search. Nothing here is reconstructed from training-data memory or invented for demo purposes. Where sources gave slightly different phrasing (e.g. exact date of flatmap-stream's first malicious version), the npm Security postmortem and the GitHub issue thread are treated as authoritative since they're primary.",
+
+  "timeline": [
+    { "date": "2015-07-31", "event": "GitHub user devinus asks maintainer dominictarr whether flatmap functionality would be welcomed; dominictarr agrees. Later read by right9ctrl as a social-engineering opening." },
+    { "date": "2018-08-05", "event": "User 'Antonio Macias' publishes flatmap-stream 0.1.0 to npm — benign at this point, effectively unused (zero prior downloads)." },
+    { "date": "2018-09-09", "event": "right9ctrl, newly granted publish rights to event-stream, adds flatmap-stream as a dependency (version range ^0.1.0) and publishes event-stream@3.3.6." },
+    { "date": "2018-09-XX", "event": "flatmap-stream 0.1.1 is published, now containing obfuscated, encrypted malicious code hidden in a test directory of the published tarball (not visible on GitHub)." },
+    { "date": "2018-09-16", "event": "right9ctrl removes the flatmap-stream dependency from event-stream, inlining the flatmap function directly, and releases event-stream@4.0.0 — clean, but 3.3.6 remains the latest 3.x tag and stays installable." },
+    { "date": "2018-11-19", "event": "GitHub user NewEraCracker publicly flags flatmap-stream as suspicious in event-stream issue #115." },
+    { "date": "2018-11-20", "event": "The malicious payload is decoded (credited to maths22, FallingSnow, joepie91): it activates only when the npm_package_description environment variable of the root package being built equals \"A Secure Bitcoin Wallet\" — Copay's exact package.json description." },
+    { "date": "2018-11-26", "event": "npm Security is notified, triages the malware, and removes flatmap-stream and event-stream@3.3.6 from the registry, taking ownership of event-stream to prevent further abuse." }
+  ],
+
+  "compromisedVersions": [
+    { "package": "event-stream", "version": "3.3.6", "publishedAt": "2018-09-09", "yankedAt": "2018-11-26", "malicious": false, "note": "Not malicious itself — carries the malicious dependency via a caret range." },
+    { "package": "flatmap-stream", "version": "0.1.0", "publishedAt": "2018-08-05", "malicious": false, "note": "Initial benign publish." },
+    { "package": "flatmap-stream", "version": "0.1.1", "malicious": true, "note": "Contains the obfuscated payload, hidden in the tarball's test directory, encrypted using the target's package description as the key." },
+    { "package": "flatmap-stream", "version": "0.1.2", "malicious": true, "note": "Also malicious; flagged alongside 0.1.1 in GitHub issue #115." }
+  ],
+
+  "dependencyEdges": [
+    { "from": "event-stream@3.3.6", "to": "flatmap-stream@0.1.1", "range": "^0.1.0", "note": "event-stream@3.3.6 declared a caret range (^0.1.0) on flatmap-stream, not a pinned version. This edge points at 0.1.1 specifically — the first version GitHub issue #115 flagged as malicious — as a simplification of full semver-range resolution, consistent with the same simplification documented for the CVE-reachability engine's affectedVersions field (README §5.3)." }
+  ],
+
+  "targetedConsumer": {
+    "name": "copay",
+    "vendor": "BitPay",
+    "packageDescription": "A Secure Bitcoin Wallet",
+    "affectedAppVersions": "5.0.2 - 5.1.0",
+    "activationMechanism": "The payload decrypted a second-stage script only when process.env.npm_package_description (set by npm from the root package's package.json 'description' field during a build) matched 'A Secure Bitcoin Wallet' exactly. For every other consumer of the compromised event-stream/flatmap-stream versions, decryption failed silently and no malicious code ran.",
+    "payloadBehavior": "Harvested wallet private keys and account balances from Copay/BitPay wallets holding more than 100 BTC or 1,000 BCH, exfiltrating them to an attacker-controlled server."
+  },
+
+  "reportedScale": {
+    "eventStreamWeeklyDownloads": "~2,000,000",
+    "flatmapStreamCumulativeDownloads": "reported as 8,000,000+ by Snyk's postmortem",
+    "note": "These are the widely-reported download figures for the compromised packages during the incident, cited directly from the Snyk postmortem. They describe how many installs pulled the compromised code, not how many were the intended target — see targetedConsumer above for that distinction, which is the actual point of this demo."
+  }
+}

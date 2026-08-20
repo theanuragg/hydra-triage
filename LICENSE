@@ -1,0 +1,26 @@
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+hydra-triage
+Copyright (C) 2026 the hydra-triage authors
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+---
+NOTE (remove before submitting): this file has the SPDX header and notice
+but not the full AGPL-3.0 license body — the sandbox this was generated in
+has no network access to fetch it. Before pushing the public repo, replace
+this file with the canonical text from
+https://www.gnu.org/licenses/agpl-3.0.txt (or run `npx license agpl-3.0`).
+The submission rules require an actual open-source license in the repo, and
+judges may check that the body matches the SPDX identifier above.

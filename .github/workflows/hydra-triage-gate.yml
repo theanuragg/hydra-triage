@@ -1,0 +1,67 @@
+name: hydra-triage reachability gate
+
+# Blocks a PR only if it makes a previously-unreachable CVE reachable.
+# A CVE that was already reachable before this PR does NOT fail the
+# check here — that's a pre-existing finding, not something this specific
+# change introduced, and re-failing every PR for it is exactly the alert
+# fatigue this whole project exists to eliminate. See src/gate.ts.
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  reachability-gate:
+    runs-on: ubuntu-latest
+    # NOTE: no service container here on purpose. I searched for a
+    # ghcr.io/hydra-db/hydradb image to wire in automatically and found
+    # nothing — every public "hydra" Docker image that exists is an
+    # unrelated project (a Postgres columnar extension, an NZB search
+    # tool, an OAuth2 server). Asserting a container image path I
+    # couldn't verify would be worse than leaving this explicit: point
+    # HYDRA_BASE_URL at a real running HydraDB instance (self-hosted or
+    # via secrets) before this workflow will do anything.
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # need full history so both base and head refs resolve
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install hydra-triage
+        run: |
+          git clone --depth 1 https://github.com/YOUR_ORG/hydra-triage.git /tmp/hydra-triage
+          cd /tmp/hydra-triage
+          npm install
+          npm run build
+
+      - name: Run reachability gate
+        id: gate
+        run: |
+          node /tmp/hydra-triage/dist/gateCli.js \
+            --repo "$GITHUB_WORKSPACE" \
+            --base "origin/${{ github.event.pull_request.base.ref }}" \
+            --head "${{ github.event.pull_request.head.sha }}" \
+            --base-url "${{ secrets.HYDRA_BASE_URL }}" \
+            --token "${{ secrets.HYDRA_TOKEN }}" \
+            --pr-comment-out gate-report.md
+        continue-on-error: true
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('gate-report.md', 'utf-8');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+
+      - name: Fail if gate blocked
+        if: steps.gate.outcome == 'failure'
+        run: exit 1

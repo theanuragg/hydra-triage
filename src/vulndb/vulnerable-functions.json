@@ -1,0 +1,59 @@
+{
+  "_comment": "Function-level vulnerable-export data for well-documented npm CVEs. Package-level CVE feeds (OSV/GHSA/NVD) tell you a bad *version* is in your tree; almost none tell you which *exported function* actually carries the vulnerable code path, which is the piece reachability analysis needs. This file is hand-curated from each advisory's technical writeup so the demo traversal is grounded in real, checkable vulnerabilities rather than invented ones. A production build would maintain this as a continuously-updated feed, not a static file.",
+  "entries": [
+    {
+      "cve": "CVE-2021-23337",
+      "packageName": "lodash",
+      "affectedVersions": "<4.17.21",
+      "vulnerableExport": "template",
+      "severity": "high",
+      "summary": "lodash.template allows command injection through the `options.imports` template variable when template source or options are attacker-influenced; the compiled template function evaluates using the Function constructor.",
+      "reference": "https://github.com/advisories/GHSA-35jh-r3h4-6jhm"
+    },
+    {
+      "cve": "CVE-2020-7598",
+      "packageName": "minimist",
+      "affectedVersions": "<0.2.1 || >=1.0.0 <1.2.3",
+      "vulnerableExport": "default",
+      "severity": "critical",
+      "summary": "minimist's argument parser mutates Object.prototype when a crafted `--__proto__` flag is parsed, giving prototype pollution to any caller that passes untrusted argv straight into minimist.",
+      "reference": "https://github.com/advisories/GHSA-xvch-5gv4-984h"
+    },
+    {
+      "cve": "CVE-2017-5941",
+      "packageName": "node-serialize",
+      "affectedVersions": "*",
+      "vulnerableExport": "unserialize",
+      "severity": "critical",
+      "summary": "node-serialize.unserialize executes embedded IIFE payloads in the serialized string via eval-equivalent deserialization, giving remote code execution on any input the attacker can influence, e.g. a cookie.",
+      "reference": "https://opsecx.com/index.php/2017/02/08/exploiting-node-js-deserialization-bug-for-remote-code-execution/"
+    },
+    {
+      "cve": "CVE-2022-29078",
+      "packageName": "ejs",
+      "affectedVersions": "<3.1.7",
+      "vulnerableExport": "render",
+      "severity": "critical",
+      "summary": "ejs.render does not sufficiently sanitize the `settings` / `options` object; an attacker who controls render options (common when options are built from request-derived data) can achieve template-string-based remote code execution.",
+      "reference": "https://github.com/advisories/GHSA-phwq-j96m-2c2q"
+    },
+    {
+      "cve": "CVE-2022-23529",
+      "packageName": "jsonwebtoken",
+      "affectedVersions": "<9.0.0",
+      "vulnerableExport": "verify",
+      "severity": "high",
+      "summary": "jsonwebtoken.verify can be tricked into using an attacker-supplied value as the signing secret when the secret/key lookup is dynamic and untrusted input reaches the algorithm or key-selection path, allowing signature forgery.",
+      "reference": "https://github.com/advisories/GHSA-qwph-4952-7xr6"
+    },
+    {
+      "cve": "CVE-2018-3721",
+      "packageName": "lodash",
+      "affectedVersions": "<4.17.5",
+      "vulnerableExport": "merge",
+      "severity": "high",
+      "summary": "lodash.merge is vulnerable to prototype pollution when merging an attacker-controlled object, letting an attacker inject or overwrite properties on Object.prototype.",
+      "reference": "https://github.com/advisories/GHSA-p6mc-m468-83gw"
+    }
+  ]
+}
